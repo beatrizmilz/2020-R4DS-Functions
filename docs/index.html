@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>index.utf8</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="04/05/2020" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css\metropolis.css" type="text/css" />
+    <link rel="stylesheet" href="css\metropolis-fonts.css" type="text/css" />
+    <link rel="stylesheet" href="css\footer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# <center>
+<img src= 'img/rlogos/hex-tidyverse.jpg' width = '25%' alt='Tidyverse'></br>
+</center>
+## Funciones <br> R para Ciencia de Datos
+### 04/05/2020
+
+---
+
+layout: true
+  
+&lt;div class="my-footer"&gt;&lt;span&gt;
+
+
+Source: &lt;a href="https://es.r4ds.hadley.nz/funciones.html"&gt; Funciones. R para Ciencia de Datos by Hadley Wickham and Garrett Grolemund. &lt;/a&gt; 
+
+
+&lt;/span&gt;&lt;/div&gt; 
+---
+class:
+
+
+
+
+
+
+
+.pull-left[
+
+- [R for Data Science](https://r4ds.had.co.nz/)
+
+&lt;img src="https://es.r4ds.hadley.nz/cover.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+]
+
+.pull-right[
+
+- [R para Ciencia de Datos](https://es.r4ds.hadley.nz/)
+
+&lt;img src="https://es.r4ds.hadley.nz/hex_r4ds-es.png" width="90%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+class:
+
+# Introducción
+
+- Las funciones permiten automatizar algunas tareas comunes de una forma más poderosa y general que copiar-y-pegar
+
+- Consejos para:
+    
+    - Escribir funciones
+
+    - Estilo de código
+
+## Prerrequisitos
+
+- R
+
+- RStudio
+
+
+
+&lt;img src="img/rlogos/rstudio-r.jpg" width="40%" style="display: block; margin: auto;" /&gt;
+
+
+
+
+
+---
+class:
+
+# Principio DRY - “Do not Repeat Yourself”
+
+- “No repetirse a uno mismo”: Cuanta más repetición tengas en tu código, más lugares tendrás que recordar de actualizar cuando las cosas cambien, y es más probable que crees errores (bugs) a lo largo del tiempo.
+
+---
+class:
+
+# Funciones
+
+- Extraer el código repetido en una función es una buena idea, ya que previene que cometas errores.
+
+- Otra ventaja de las funcioens es que si nuestros requerimientos cambian, solo necesitamos hacer modificaciones en un solo lugar. 
+
+- Deberías considerar escribir una función cuando has copiado y pegado un bloque de código más de dos veces.
+
+- Para escribir una función, lo primero que necesitas hacer es analizar el código. ¿Cuantos inputs tiene?
+
+-  Es más fácil empezar con código que funciona y luego convertirlo en una función; es más difícil crear la función y luego tratar que funcione.
+
+
+- Una función devuelve el último valor que calculó.
+
+
+---
+class:
+
+#  Pasos claves...
+
+## ...Para crear una función nueva
+
+1. Necesitas elegir un nombre para la función.
+
+2. Listar los inputs, o argumentos, de la función dentro de function. 
+
+3. Situar el código que has creado en el cuerpo de una función, un bloque de { que sigue inmediatamente a function(...).
+
+
+```r
+nome_de_la_funcion &lt;- function(argumentos){
+  cuerpo de la función
+}
+```
+
+
+---
+class:
+
+#  Ejemplo de libro
+
+
+```r
+rescale01 &lt;- function(x) {
+  rng &lt;- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+```
+
+- `rescale01` es el nombre de la función
+
+- `x` es lo unico argumento
+
+-  Cuerpo de la función:
+
+  `rng &lt;- range(x, na.rm = TRUE)`
+
+  `(x - rng[1]) / (rng[2] - rng[1])`
+
+- Ejemplo de la utilización de la función:
+
+```r
+rescale01(c(0, 5, 10))
+```
+
+```
+## [1] 0.0 0.5 1.0
+```
+
+---
+class:
+
+# Tests
+
+- Es una buena idea chequear tu función con algunos inputs diferentes:
+
+
+```r
+rescale01(c(-10, 0, 10))
+```
+
+```
+## [1] 0.0 0.5 1.0
+```
+
+```r
+rescale01(c(1, 2, 3, NA, 5))
+```
+
+```
+## [1] 0.00 0.25 0.50   NA 1.00
+```
+
+- Sobre tests formales y automatizados -&gt; se llama pruebas unitarias (unit testing): leea mas en https://r-pkgs.org/tests.html
+
+---
+class:
+
+# Las funciones son para ...
+
+## ...los seres humanos y para las computadoras
+
+- Consejos para estilo de código: cosas que debes tener en mente a la hora de escribir funciones entendibles para otras personas
+
+---
+class:
+
+# Nombre de una función
+
+- Debería ser corto, pero que evoque claramente lo que la función hace.
+
+- Generalmente, los nombres de las funciones deberían ser verbos y los argumentos sustantivos, pero hay algunas excepciones.
+
+- Ejemplos del libro:
+
+
+```r
+# Muy corto
+f()
+
+# No es un verbo y es poco descriptivo
+mi_funcion_genial()
+
+# Largos, pero descriptivos
+imputar_faltantes()
+colapsar_anios()
+```
+
+
+---
+class:
+
+# Case Style 
+
+- Lo importante es que seas consistente: elije uno o el otro y quédate con él. 
+
+- Recomendación: `snake_case` - cada palabra en minúscula está separada por un guión bajo
+
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/allisonhorst/cases.jpg" alt="Source: &amp;lt;a href='https://twitter.com/allison_horst/status/1205702878544875521'&amp;gt; @allison_horst &amp;lt;/a&amp;gt;" width="60%" /&gt;
+&lt;p class="caption"&gt;Source: &lt;a href='https://twitter.com/allison_horst/status/1205702878544875521'&gt; @allison_horst &lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+
+
+---
+class:
+
+# Case Style 
+
+- Consejo personal para tibbles
+
+&lt;div class="figure" style="text-align: center"&gt;
+&lt;img src="img/allisonhorst/janitor-clean-names.jpg" alt="Source: &amp;lt;a href='https://twitter.com/allison_horst/status/1170184721482932224/photo/1'&amp;gt; @allison_horst &amp;lt;/a&amp;gt;" width="40%" /&gt;
+&lt;p class="caption"&gt;Source: &lt;a href='https://twitter.com/allison_horst/status/1170184721482932224/photo/1'&gt; @allison_horst &lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+
+```r
+names(iris)
+```
+
+```
+## [1] "Sepal.Length" "Sepal.Width"  "Petal.Length" "Petal.Width"  "Species"
+```
+
+```r
+iris_clean &lt;- janitor::clean_names(iris)
+names(iris_clean)
+```
+
+```
+## [1] "sepal_length" "sepal_width"  "petal_length" "petal_width"  "species"
+```
+
+
+---
+class:
+
+# Nombres y argumentos consistentes 
+
+- Si tienes una familia de funciones que hacen cosas similares, asegúrate de que tengan nombres y argumentos consistentes.
+
+- Utiliza un prefijo común para indicar que están conectadas. Eso es mejor que usar un sufijo común, ya que el autocompletado te permite escribir el prefijo y ver todos los otros miembros de la familia.
+
+
+
+
+```r
+# Bien
+input_select()
+input_checkbox()
+input_text()
+
+# No tan bien
+select_input()
+checkbox_input()
+text_input()
+```
+
+---
+class:
+
+#  Evita sobrescribir funciones ...
+
+## .. ya existentes
+
+- Siempre que sea posible, evita sobrescribir funciones y variables ya existentes. 
+
+- No siempre es posible hacer esto, ya que hay un montón de nombres buenos que ya han sido utilizados por otros paquetes. 
+
+- Evitar el uso de los nombres más comunes de R base ahorrará confusiones.
+
+
+```r
+# ¡No hagas esto!
+T &lt;- FALSE
+c &lt;- 10
+mean &lt;- function(x) sum(x)
+```
+
+
+---
+class: 
+
+# Comentarios
+
+- Comienzan com #
+
+- Explicar el "porqué" de tu código.
+
+  - Por qué elegiste este enfoque frente a otras alternativas? 
+  - ¿Qué otra cosa probaste que no funcionó?
+  - Es una gran idea capturar este tipo de pensamientos en un comentario.
+
+
+```r
+# Esto es un comentario! :)
+```
+
+---
+class: 
+
+# Dividir el codigo en partes
+
+- Puedes utilizar comentarios y - o =
+
+- Más fácil detectar los fragmentos
+
+- Más fácil de leer
+
+
+```r
+# Cargar los datos --------------------------------------
+
+# Graficar los datos --------------------------------------
+```
+
+
+---
+class: 
+
+# Ejecución condicional
+
+- Una sentencia if (si) te permite ejecutar un código condicional.
+
+
+```r
+if (condition) {
+ # el código que se ejecuta cuando la condición es verdadera (TRUE)
+} else {
+ # el código que se ejecuta cuando la condición es falsa (FALSE)
+}
+```
+
+
+Puedes encadenar múltiples sentencias if juntas:
+
+
+```r
+if (this) {
+ # haz aquello
+} else if (that) {
+ # haz otra cosa
+} else {
+ #
+}
+```
+
+---
+class: 
+
+# Condiciones
+
+
+- La condición debe evaluar como TRUE o FALSE:
+
+
+```r
+if (c(TRUE, FALSE)) {}
+#&gt; Warning in if (c(TRUE, FALSE)) {: the condition has length &gt; 1 and only the
+#&gt; first element will be used
+#&gt; NULL
+
+if (NA) {}
+#&gt; Error in if (NA) {: missing value where TRUE/FALSE needed
+```
+
+
+---
+class: 
+
+# Estilo del código
+
+
+```r
+# Bien
+if (y &lt; 0 &amp;&amp; debug) {
+ message("Y es negativo")
+}
+
+if (y == 0) {
+ log(x)
+} else {
+ y ^ x
+}
+
+# Mal
+if (y &lt; 0 &amp;&amp; debug)
+message("Y is negative")
+
+if (y == 0) {
+ log(x)
+}
+else {
+ y ^ x
+}
+```
+
+
+
+
+---
+class: 
+
+# Estilo del código
+
+- Atajo útil para indentación: `Ctrl + Shift + A`
+
+&lt;img src="img/gif-atalho-identacao.gif" width="100%" style="display: block; margin: auto;" /&gt;
+---
+class: 
+
+# Argumentos de funciones
+
+- 2 conjuntos amplios: 
+
+  - Argumentos para provee los __datos__ a computar 
+  
+  - Argumentos que controlan los __detalles de la computación__.
+  
+- Generalmente, argumentos relativos a los datos deben ir primero.
+
+- Cuando llamas una función, generalmente omites los nombres de los argumentos de datos justamente porque son los más comúnmente usados. 
+  
+- En la sección Help de una función, tenemos las informaciones de argumentos possibles.
+
+
+
+---
+class: 
+
+# Argumentos de funciones
+
+Ejemplo:
+
+
+```r
+?mean
+```
+
+
+__Arguments:__
+
+__`x`__      __(provee los datos a computar)__
+An R object. Currently there are methods for numeric/logical vectors and date, date-time and time interval objects. Complex vectors are allowed for trim = 0, only.
+
+__`trim`__	 __(controlan los detalles de la computación)__
+the fraction (0 to 0.5) of observations to be trimmed from each end of x before the mean is computed. Values of trim outside that range are taken as the nearest endpoint.
+
+__`na.rm`	__  __(controlan los detalles de la computación)__
+a logical value indicating whether NA values should be stripped before the computation proceeds.
+
+__`...`	__  __(controlan los detalles de la computación)__
+further arguments passed to or from other methods.
+
+
+
+---
+class: 
+
+# Argumentos de funciones
+## Elección de nombres
+
+- Los nombres de los argumentos también son importantes.
+
+- A R no le importa, pero sí a quienes leen tu código. 
+
+- En general, deberías preferir nombres largos y más descriptivos.Pero hay un puñado de nombres muy comunes y muy cortos. Vale la pena memorizar estos:
+
+`x`, `y`, `z`: vectores.
+
+`w`: un vector de pesos.
+
+__`df`__: un data frame.
+
+`i`, `j`: índices numéricos (usualmente filas y columnas).
+
+`n`: longitud, o número de filas.
+
+`p`: número de columnas.
+
+---
+class: 
+
+# Argumentos de funciones
+
+- __El orden__ de los argumentos es importante!
+
+- Ejemplo. `mean()` tiene los argumentos: `x`, `trim`, `na.rm`. Si solo usa el primer y el tercer argumento (`x` y `na.rm`), debe nombrar el argumento para no dar un error, de lo contrario, R indicará este input  para el segundo argumento (en orden).
+
+
+```r
+mean(1:10, TRUE)
+
+
+# Error in mean.default(1:10, TRUE):'trim' deve ser numérico de comprimento 1
+```
+- La mejor forma: 
+
+```r
+mean(1:10, na.rm = TRUE)
+```
+
+```
+## [1] 5.5
+```
+
+---
+class: 
+
+# Argumentos de funciones
+
+## Valores por defecto
+
+- El valor por defecto debería ser casi siempre el valor más común. 
+
+- Se especifica un valor por defecto de la misma manera en la que se llama a una función con un argumento nombrado.
+
+- Ejemplo:
+
+
+```r
+round(5.55555)
+```
+
+```
+## [1] 6
+```
+
+
+```r
+round(5.55555, digits = 1)
+```
+
+```
+## [1] 5.6
+```
+
+
+```r
+round(5.55555, digits = 2)
+```
+
+```
+## [1] 5.56
+```
+---
+class: 
+
+# Argumentos de funciones
+
+## Valores por defecto
+
+- Ejemplo del livro
+
+
+```r
+# Computar intervalo de confianza alrededor de la media usando
+# la aproximación normal 
+mean_ci &lt;- function(x, conf = 0.95) {
+ se &lt;- sd(x) / sqrt(length(x))
+ alpha &lt;- 1 - conf
+ mean(x) + se * qnorm(c(alpha / 2, 1 - alpha / 2))
+}
+```
+
+```r
+x &lt;- runif(100)
+mean_ci(x)
+```
+
+```
+## [1] 0.441236 0.553990
+```
+
+```r
+mean_ci(x, conf = 0.99)
+```
+
+```
+## [1] 0.4235211 0.5717050
+```
+
+
+
+---
+class: 
+
+# Estilo del código
+
+
+- Ten en cuenta que cuando llamas a una función, debes colocar un espacio alrededor de = y siempre poner un espacio después de la coma, no antes (como cuando escribes en español). 
+
+- El uso del espacio en blanco hace más fácil echar un vistazo a la función para identificar los componentes importantes.
+
+
+```r
+# Bien
+promedio &lt;- mean(pies / 12 + pulgadas, na.rm = TRUE)
+
+# Mal
+promedio&lt;-mean(pies/12+pulgadas,na.rm=TRUE)
+```
+
+- Atajo útil para esto: `Ctrl + Shift + A`  (de nuevo! 😀)
+
+&lt;img src="img/gif-atalho-identacao.gif" width="100%" style="display: block; margin: auto;" /&gt;
+
+
+---
+class: 
+
+# Argumentos de funciones
+
+##  Chequear valores
+
+
+- Chequear si los inputs utilizados son adecuadas para la función.
+
+- Es una buena práctica verificar las condiciones previas importantes y arrojar un error (con `stop()`, parar), si estas no son verdaderas.
+
+- Debe haber un equilibrio entre la cantidad de tiempo que inviertes en hacer que tu función sea sólida y la cantidad de tiempo que pasas escribiéndola. 
+
+---
+class: 
+
+# Argumentos de funciones
+
+##  Chequear valores
+
+Ejemplo:
+
+
+
+```r
+wt_mean &lt;- function(x, w) {
+ if (length(x) != length(w)) {
+ stop("`x` y `w` deben tener la misma extensión", call. = FALSE)
+ }
+ sum(w * x) / sum(w)
+}
+```
+
+
+```r
+wt_mean(1:10, 1:5)
+
+# Erro: `x` y `w` deben tener la misma extensión
+```
+
+---
+class: 
+
+# Argumentos de funciones
+
+##  Chequear valores
+
+- Una opción útil es incorporar __`stopifnot()`__: esto comprueba que cada argumento sea TRUE. En caso contrario genera un mensaje de error. Al usar `stopifnot()` afirmas lo que debería ser cierto en lugar de verificar lo que podría estar mal.
+
+Ejemplo:
+
+```r
+wt_mean &lt;- function(x, w, na.rm = FALSE) {
+ stopifnot(is.logical(na.rm), length(na.rm) == 1)
+ stopifnot(length(x) == length(w))
+
+ if (na.rm) {
+ miss &lt;- is.na(x) | is.na(w)
+ x &lt;- x[!miss]
+ w &lt;- w[!miss]
+ }
+ sum(w * x) / sum(w)
+}
+# wt_mean(1:6, 6:1, na.rm = "foo")
+#&gt; Error in wt_mean(1:6, 6:1, na.rm = "foo"): is.logical(na.rm) is not TRUE
+```
+
+
+---
+class: 
+
+# Argumentos de funciones
+
+###  Punto-punto-punto (…)
+
+- `...` es un argumento especial: captura cualquier número de argumentos que no estén contemplados de otra forma.
+
+- Cualquier argumento mal escrito no generará un error. Esto hace que sea más fácil que los errores de tipeo pasen inadvertidos.
+
+Ejemplo
+
+
+```r
+sum(c(1, 2, NA), na.mr = TRUE)
+```
+
+```
+## [1] NA
+```
+
+```r
+sum(c(1, 2, NA), na.rm = TRUE)
+```
+
+```
+## [1] 3
+```
+
+
+---
+class: 
+
+# Valores de retorno
+
+- Cosas que debes considerar al retornar un valor:
+
+¿Devolver un valor antes hace que tu función sea más fácil de leer?
+
+¿Puedes hacer tu función apta para utilizarla con pipes (`%&gt;%`)?
+
+## Sentencias de retorno explícitas
+
+- Puedes optar por devolver algo anticipadamente haciendo uso de la función `return()`
+
+
+---
+class: 
+
+# Valores de retorno
+
+##  Escribir funciones aptas para un pipe `%&gt;%` 
+
+- Hay dos tipos básicos de funciones aptas para pipes: transformaciones y efectos secundarios. 
+
+- __Transformaciones__ : se ingresa un objeto como primer argumento y se retorna una versión modificada del mismo. 
+
+
+```r
+iris %&gt;% janitor::clean_names() 
+```
+  
+  
+- __Efectos Secundarios__ : el objeto ingresado no es modificado, sino que la función realiza una acción sobre el objeto. -&gt; Las funciones de efectos secundarios deben retornar “invisiblemente” el primer argumento, de manera que aún cuando no se impriman, puedan ser utilizados en una secuencia de pipes. 
+  
+
+---
+class: 
+
+
+Ejemplo com  __Efectos Secundarios__ :
+
+
+```r
+mostrar_faltantes &lt;- function(df) {
+ n &lt;- sum(is.na(df))
+ cat("Valores faltantes: ", n, "\n", sep = "")
+
+ invisible(df)
+}
+```
+
+
+```r
+x &lt;- mostrar_faltantes(iris)
+```
+
+```
+## Valores faltantes: 0
+```
+
+```r
+class(x)
+```
+
+```
+## [1] "data.frame"
+```
+
+```r
+dim(x)
+```
+
+```
+## [1] 150   5
+```
+
+---
+class: 
+
+# Entorno (Environment)
+
+- Cruciales para que algunas funciones trabajen
+
+Ejemplo:
+
+
+
+```r
+f &lt;- function(x) {
+ x + y
+}
+```
+
+- Como y no está definida dentro de la función, R mirará dentro del entorno donde la función fue definida
+
+
+```r
+y &lt;- 100
+f(10)
+```
+
+```
+## [1] 110
+```
+
+```r
+y &lt;- 1000
+f(10)
+```
+
+```
+## [1] 1010
+```
+
+
+---
+class:
+
+- Muchas gracias!
+
+- Diapositivas creadas con el paquete [Xaringan](https://github.com/yihui/xaringan), con el tema `metropolis` modificado por [Bea Milz](https://beatrizmilz.com).
+
+- Source: &lt;a href="https://es.r4ds.hadley.nz/funciones.html"&gt; Funciones. R para Ciencia de Datos by Hadley Wickham and Garrett Grolemund. &lt;/a&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<style>
+  .logo {
+    background-image: url(img/rlogos/hex-tidyverse.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 0.5em;
+    right: 0.5em;
+    width: 50px;
+    height: 128px;
+    z-index: 0;
+  }
+</style>
+  
+  <script>
+  document
+.querySelectorAll(
+  '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+  // ':not(.inverse)' +
+    ':not(.hide-logo)'
+)
+.forEach(el => {
+  el.innerHTML += '<div class="logo"></div>';
+});
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
